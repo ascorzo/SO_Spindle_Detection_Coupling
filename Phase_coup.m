@@ -1,4 +1,4 @@
-function [spindleInBinTrial,xedges] = Phase_coup(FilteredEEG_ctx, out_ctx, out_th)
+function [spindleInBinTrial,xedges] = Phase_coup(FilteredEEG_ctx, out_ctx, out_th,mode)
 
 xhilb = hilbert(FilteredEEG_ctx);
 xphase = angle(xhilb); 
@@ -13,7 +13,9 @@ if isnan(out_th.trialinfo(:,2))
 end
 
 spindles(out_th.trialinfo(:,2)) = 1; 
-spindles(spindles==1) = out_th.trialinfo(:,12);
+if strcmp(mode,'Power') == 1
+    spindles(spindles==1) = out_th.trialinfo(:,12);
+end
 
 for sw = 1:size(out_ctx.trialinfo,1)
 phase_sw = xphase(out_ctx.trialinfo(sw,2):out_ctx.trialinfo(sw,4));
@@ -26,7 +28,7 @@ for E=1:length(xedges)-1
     spindleInBin(sw, E) = mean(spindles_i(idxs)); 
 end
 end 
-spindleInBinTrial = sum(spindleInBin,1);
+spindleInBinTrial = mean(spindleInBin,1);
 
 % polarhistogram('BinEdges', xedges, 'BinCounts', spindleInBinTrial,'FaceColor', 'magenta',...
 %     'FaceAlpha',.3);

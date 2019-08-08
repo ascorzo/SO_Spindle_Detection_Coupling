@@ -7,36 +7,6 @@ s_TimeSam = s_TotalTimeSec * s_fs; %total time in samples
 s_TimeAfterCero = 15;
 s_TimeBeforeCero = 15;
 
-str_Chan = "C3";
-%Region of interest for Cortex:
-%Possible options: {'Frontal_Inf_Oper L';'Frontal_Inf_Oper R';'Frontal_Inf_Orb_2 L';'Frontal_Inf_Orb_2 R';'Frontal_Inf_Tri L';'Frontal_Inf_Tri R';'Frontal_Med_Orb L';'Frontal_Med_Orb R';'Frontal_Mid_2 L';'Frontal_Mid_2 R';'Frontal_Sup_2 L';'Frontal_Sup_2 R';'Frontal_Sup_Medial L';'Frontal_Sup_Medial R'}
-str_ROI_ctx = 'Frontal_Sup_Medial L';
-
-%Region of interest for Thalamus:
-%Possible options: {'Thalamus L';'Thalamus R'}
-str_ROI_th = 'Thalamus L';
-
-
-%Other possible options of regions to compare:h
-%{'Amygdala L';'Amygdala R';'Angular L';'Angular R';'Calcarine L';'Calcarine R';
-%'Caudate L';'Caudate R';'Cerebelum_3 R';'Cerebelum_4_5 L';'Cerebelum_4_5 R';
-%'Cerebelum_6 L';'Cerebelum_6 R';'Cerebelum_Crus1 L';'Cerebelum_Crus1 R';
-%'Cerebelum_Crus2 L';'Cingulate_Ant L';'Cingulate_Ant R';'Cingulate_Mid L';
-%'Cingulate_Mid R';'Cingulate_Post L';'Cingulate_Post R';'Cuneus L';'Cuneus R';
-%'Fusiform L';'Fusiform R';'Heschl L';'Heschl R';'Hippocampus L';'Hippocampus R';
-%'Insula L';'Insula R';'Lingual L';'Lingual R';'Occipital_Inf L';'Occipital_Inf R';
-%'Occipital_Mid L';'Occipital_Mid R';'Occipital_Sup L';'Occipital_Sup R';'OFCant L';
-%'OFCant R';'OFClat L';'OFClat R';'OFCmed L';'OFCmed R';'OFCpost L';'OFCpost R';
-%'Olfactory L';'Olfactory R';'Pallidum L';'Pallidum R';'Paracentral_Lobule L';
-%'Paracentral_Lobule R';'ParaHippocampal L';'ParaHippocampal R';'Parietal_Inf L';
-%'Parietal_Inf R';'Parietal_Sup L';'Parietal_Sup R';'Postcentral L';'Postcentral R';
-%'Precentral L';'Precentral R';'Precuneus L';'Precuneus R';'Putamen L';'Putamen R';
-%'Rectus L';'Rectus R';'Rolandic_Oper L';'Rolandic_Oper R';'Supp_Motor_Area L';
-%'Supp_Motor_Area R';'SupraMarginal L';'SupraMarginal R';'Temporal_Inf L';
-%'Temporal_Inf R';'Temporal_Mid L';'Temporal_Mid R';'Temporal_Pole_Mid L';
-%'Temporal_Pole_Mid R';'Temporal_Pole_Sup L';'Temporal_Pole_Sup R';'Temporal_Sup L';'Temporal_Sup R'}
-
-
 %% Set up user land
 % Normally not needed to add slash to end of folder paths. But necessary in
 % case of searching for specific extensions.
@@ -98,6 +68,35 @@ for Load2Mem = 1:numel(FilesList)
     end
 end
  
+
+%% Select Which areas to compare 
+
+if strcmp(ChanVsSource,'Channel')
+    FileTemp = load(FilesListChanOdor(1).name);
+    Sources = FileTemp.Channel.label;
+    [indx,tf] = listdlg('PromptString','Select a source: for Slow Oscillations',...
+        'SelectionMode','single',...
+        'ListString',Sources);
+    str_ChanSO = Sources(indx);
+    
+    [indx,tf] = listdlg('PromptString','Select a source: for Sleep Spindles',...
+        'SelectionMode','single',...
+        'ListString',Sources);
+    str_ChanSS = Sources(indx);
+    
+else
+    FileTemp = subjectFiles{1};
+    Sources = string({FileTemp.Atlas.Scouts.Label});
+    [indx,tf] = listdlg('PromptString','Select a source for SO:',...
+        'SelectionMode','single',...
+        'ListString',Sources);
+    str_ROI_SO = Sources(indx);
+    [indx,tf] = listdlg('PromptString','Select a source for Spindles:',...
+        'SelectionMode','single',...
+        'ListString',Sources);
+    str_ROI_SS = Sources(indx);
+end
+
 %% Odor datasets
 
 for subj = 1:length(subjectFiles)
@@ -128,14 +127,14 @@ for subj = 1:length(subjectFiles)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         switch ChanVsSource
             case 'Channel'
-                findChannel = find(strcmp(fileChan.Channel.label, str_Chan));
+                findChannel = find(strcmp(fileChan.Channel.label, str_ChanSO));
                 DataOdorTrial_ctx = DataOdorChan(findChannel,:,trial);
             case 'Source'
-                s_ROI = strcmp({fileSource.Atlas.Scouts.Label},str_ROI_ctx);
+                s_ROI = strcmp({fileSource.Atlas.Scouts.Label},str_ROI_SO);
                 DataOdorTrial_ctx = DataOdorSource(s_ROI,:,trial);
         end
         
-        Label = 'ctx';
+        Label = 'SO';
         SleepScoring = ones(length(DataOdorTrial_ctx),1);
         ScoringArtefacts = zeros(length(DataOdorTrial_ctx),1);
         if strcmp(OnVsOff,'On') == 1
@@ -156,7 +155,7 @@ for subj = 1:length(subjectFiles)
         for i=1:size(out_ctx.trialinfo,1)
             line([out_ctx.trialinfo(i,2)/out_ctx.fsample out_ctx.trialinfo(i,4)/out_ctx.fsample]-s_TimeBeforeCero,[-.2,-.2], 'Color','red')
         end
-        ylim([-.3 .3])
+        %ylim([-.3 .3])
         %%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %  Spindle detection in thalamus
@@ -167,13 +166,13 @@ for subj = 1:length(subjectFiles)
         
         switch ChanVsSource
             case 'Channel'
-                findChannel = find(strcmp(fileChan.Channel.label, str_Chan));
+                findChannel = find(strcmp(fileChan.Channel.label, str_ChanSS));
                 DataOdorTrial_th = DataOdorChan(findChannel,:,trial);
             case 'Source'
-                s_ROI = strcmp({fileSource.Atlas.Scouts.Label},str_ROI_th);
+                s_ROI = strcmp({fileSource.Atlas.Scouts.Label},str_ROI_SS);
                 DataOdorTrial_th = DataOdorSource(s_ROI,:,trial);
         end
-        Label = 'Thalamus';
+        Label = 'SS';
         SleepScoring = ones(length(DataOdorTrial_th),1);
         ScoringArtefacts = zeros(length(DataOdorTrial_th),1);
         
@@ -191,14 +190,23 @@ for subj = 1:length(subjectFiles)
         for i=1:size(out_th.trialinfo,1)
             line([out_th.trialinfo(i,2)/out_th.fsample out_th.trialinfo(i,4)/out_th.fsample]-s_TimeBeforeCero,[-.2,-.2], 'Color','red')
         end
-        ylim([-.3 .3])
+        %ylim([-.3 .3])
         %---------------------------------------------------
+                
+        mode = 'Density';
+        [spindleInBininTrial(trial,:),xedges_dor] = Phase_coup(FilteredEEG_ctx, out_ctx, out_th, mode);
         
-        [spindleInBininTrial(trial,:),xedges_Odor] = Phase_coup(FilteredEEG_ctx, out_ctx, out_th);
-        v_DensitySpindles(trial) = size(out_th.trialinfo,1);%/s_TimeAfterCero; % Play with density or just number (Density as # of spindles in time)
+        mode = 'Power';
+        [spindlePowerInBininTrial(trial,:),xedges_Odor] = Phase_coup(FilteredEEG_ctx, out_ctx, out_th, mode);
+        
+        v_DensitySpindles(trial) = size(out_th.trialinfo,1);
+        v_MeanPowerSpindles(trial) = mean(out_th.trialinfo(:,12));
     end
+    
     v_MeanDensitySpindlesOdor(subj) = nanmean(v_DensitySpindles); %you can do either mean or sum
+    v_MeanPowerSpindlesOdor(subj) = nanmean(v_MeanPowerSpindles); %you can do either mean or sum
     spindleInBininSubject_Odor(subj,:) = nanmean(spindleInBininTrial,1); %you can do either mean or sum
+    spindlePowerInBininSubject_Odor(subj,:) = nanmean(spindlePowerInBininTrial,1); %you can do either mean or sum
 end
 
 clear subjectFilesSource
@@ -241,14 +249,14 @@ for subj = 1:length(subjectFiles)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         switch ChanVsSource
             case 'Channel'
-                findChannel = find(strcmp(fileChan.Channel.label, str_Chan));
+                findChannel = find(strcmp(fileChan.Channel.label, str_ChanSO));
                 DataPlaceboTrial_ctx = DataPlaceboChan(findChannel,:,trial);
             case 'Source'
-                s_ROI = strcmp({fileSource.Atlas.Scouts.Label},str_ROI_ctx);
+                s_ROI = strcmp({fileSource.Atlas.Scouts.Label},str_ROI_SO);
                 DataPlaceboTrial_ctx = DataPlaceboSource(s_ROI,:,trial);
         end
         
-        Label = 'ctx';
+        Label = 'SO';
         SleepScoring = ones(length(DataPlaceboTrial_ctx),1);
         ScoringArtefacts = zeros(length(DataPlaceboTrial_ctx),1);
         if strcmp(OnVsOff,'On') == 1
@@ -281,14 +289,14 @@ for subj = 1:length(subjectFiles)
         
         switch ChanVsSource
             case 'Channel'
-                findChannel = find(strcmp(fileChan.Channel.label, str_Chan));
+                findChannel = find(strcmp(fileChan.Channel.label, str_ChanSS));
                 DataPlaceboTrial_th = DataPlaceboChan(findChannel,:,trial);
             case 'Source'
-                s_ROI = strcmp({fileSource.Atlas.Scouts.Label},str_ROI_th);
+                s_ROI = strcmp({fileSource.Atlas.Scouts.Label},str_ROI_SS);
                 DataPlaceboTrial_th = DataPlaceboSource(s_ROI,:,trial);
         end
     
-        Label = 'Thalamus';
+        Label = 'SS';
         SleepScoring = ones(length(DataPlaceboTrial_th),1);
         ScoringArtefacts = zeros(length(DataPlaceboTrial_th),1);
         if strcmp(OnVsOff,'On') == 1
@@ -307,24 +315,37 @@ for subj = 1:length(subjectFiles)
         end
         ylim([-.3 .3])
         %-----------------------------------------
+        mode = 'Density';
+        [spindleInBininTrial(trial,:),xedges_Placebo] = Phase_coup(FilteredEEG_ctx, out_ctx, out_th, mode);
         
-        [spindleInBininTrial(trial,:),xedges_Placebo] = Phase_coup(FilteredEEG_ctx, out_ctx, out_th);
+        mode = 'Power';
+        [spindlePowerInBininTrial(trial,:),xedges_Placebo] = Phase_coup(FilteredEEG_ctx, out_ctx, out_th, mode);
+        
         v_DensitySpindles(trial) = size(out_th.trialinfo,1);%/s_TimeAfterCero; % Play with density or just number (Density as # of spindles in time)
+        v_MeanPowerSpindles(trial) = mean(out_th.trialinfo(:,12));
     end
-    v_MeanDensitySpindlesPlacebo(subj) = nansum(v_DensitySpindles); %you can do either mean or sum
+    v_MeanDensitySpindlesPlacebo(subj) = nanmean(v_DensitySpindles); %you can do either mean or sum
+    v_MeanPowerSpindlesPlacebo(subj) = nanmean(v_MeanPowerSpindles); %you can do either mean or sum
     spindleInBininSubject_Placebo(subj,:) = nanmean(spindleInBininTrial,1); %you can do either mean or sum
+    spindlePowerInBininSubject_Placebo(subj,:) = nanmean(spindlePowerInBininTrial,1); %you can do either mean or sum
 end
 
 %% Plots
 figure
-histogram(v_MeanDensitySpindlesOdor,10)
+histogram(v_MeanDensitySpindlesOdor)
 hold on
-histogram(v_MeanDensitySpindlesPlacebo,10)
+histogram(v_MeanDensitySpindlesPlacebo)
+title('Density')
+
 
 figure
-histogram((v_MeanDensitySpindlesOdor-v_MeanDensitySpindlesPlacebo),22);
+histogram(v_MeanPowerSpindlesOdor)
+hold on
+histogram(v_MeanPowerSpindlesPlacebo)
+title('Power')
 
-%%
+
+%% Polar Plot for Density
 meanSpindleInBin_Placebo = nanmean(spindleInBininSubject_Placebo,1);
 meanSpindleInBin_Odor = nanmean(spindleInBininSubject_Odor,1);
 
@@ -346,6 +367,33 @@ thetaticks(0:90:315); %rlim([0 .02]);
 pax = gca; pax.ThetaAxisUnits = 'radians';
 pax.FontSize = 12; pax.GridColor = 'red';
 title('SW Phase-Spindle Onset coupling - Odor');
+
+%% Polar Plot for Power
+
+meanSpindlePowerInBin_Placebo = nanmean(spindlePowerInBininSubject_Placebo,1);
+meanSpindlePowerInBin_Odor = nanmean(spindlePowerInBininSubject_Odor,1);
+
+spindlePowerInBininSubject.Placebo = spindlePowerInBininSubject_Placebo;
+spindlePowerInBininSubject.Odor = spindlePowerInBininSubject_Odor;
+save([cd, 'MeanSpindlesPowerInBin'],'spindlePowerInBininSubject');
+figure;
+polarhistogram('BinEdges', xedges_Placebo, 'BinCounts', meanSpindlePowerInBin_Placebo,'FaceColor', 'magenta',...
+    'FaceAlpha',.3);
+thetaticks(0:90:315); rlim([0 2.2]);
+pax = gca; pax.ThetaAxisUnits = 'radians';
+pax.FontSize = 12; pax.GridColor = 'red';
+title('SW Phase-Power Spindle Onset coupling - Placebo');
+
+figure;
+polarhistogram('BinEdges', xedges_Odor, 'BinCounts', meanSpindlePowerInBin_Odor,'FaceColor', 'magenta',...
+    'FaceAlpha',.3);
+thetaticks(0:90:315); rlim([0 2.2]);
+pax = gca; pax.ThetaAxisUnits = 'radians';
+pax.FontSize = 12; pax.GridColor = 'red';
+title('SW Phase-Power Spindle Onset coupling - Odor');
+
+
+
 
 %% Save useful information
 Spindles.Run = datetime;
