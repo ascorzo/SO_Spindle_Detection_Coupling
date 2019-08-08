@@ -423,8 +423,14 @@ title('SW Phase-Power Spindle Onset coupling - Odor');
 % 
 % save([cd slashSys 'run_SODetection'], 'Spindles');
 
-save('spindleInBin', 'spindleInBinTotalOdor','spindleInBinTotalPlacebo');
-save('spindlePowerInBin', 'spindlePowerInBinTotalOdor','spindlePowerInBinTotalPlacebo');
-save('DensitySpindles', 'DensitySpindlesTotalOdor','DensitySpindlesTotalPlacebo');
-save('PowerSpindles', 'PowerSpindlesTotalOdor','PowerSpindlesTotalPlacebo');
-
+if strcmp(ChanVsSource,'Channel')
+    save(strcat('spindleInBin_',str_ChanSO,'vs',str_ChanSS,'_',OnVsOff), 'spindleInBinTotalOdor','spindleInBinTotalPlacebo');
+    save(strcat('spindlePowerInBin',str_ChanSO,'vs',str_ChanSS,'_',OnVsOff), 'spindlePowerInBinTotalOdor','spindlePowerInBinTotalPlacebo');
+    save(strcat('DensitySpindles',str_ChanSO,'vs',str_ChanSS,'_',OnVsOff), 'DensitySpindlesTotalOdor','DensitySpindlesTotalPlacebo');
+    save(strcat('PowerSpindles',str_ChanSO,'vs',str_ChanSS,'_',OnVsOff), 'PowerSpindlesTotalOdor','PowerSpindlesTotalPlacebo');   
+else  
+    save(strcat('spindleInBin',str_ROI_SO,'vs',str_ROI_SS,'_',OnVsOff), 'spindleInBinTotalOdor','spindleInBinTotalPlacebo');
+    save(strcat('spindlePowerInBin',str_ROI_SO,'vs',str_ROI_SS,'_',OnVsOff), 'spindlePowerInBinTotalOdor','spindlePowerInBinTotalPlacebo');
+    save(strcat('DensitySpindles',str_ROI_SO,'vs',str_ROI_SS,'_',OnVsOff), 'DensitySpindlesTotalOdor','DensitySpindlesTotalPlacebo');
+    save(strcat('PowerSpindles',str_ROI_SO,'vs',str_ROI_SS,'_',OnVsOff), 'PowerSpindlesTotalOdor','PowerSpindlesTotalPlacebo');  
+end
