@@ -20,8 +20,8 @@ function [FilteredEEG, out] = SpindleDetection(RecordingValues, SleepScoring, Sc
 %               out.trialinfo(:,5) = duration: duration from start to end in seconds (spindle: betweet the two threshild crossings)
 %               out.trialinfo(:,6) = maxTime: time of maximum (spindle: largest negative trough during spindle) in datapoints of original dataset
 %               out.trialinfo(:,7) = minTime: time of minimum (spindle: largest positive peak during spindle) in datapoints of original dataset
-%               out.trialinfo(:,8) = minAmp: amplitude of maximum (spindle: largest negative trough during spindle) in �V
-%               out.trialinfo(:,9) = maxAmp: amplitude of minimum (spindle: largest positive peak during spindle) in �V
+%               out.trialinfo(:,8) = minAmp: amplitude of maximum (spindle: largest negative trough during spindle) in µV
+%               out.trialinfo(:,9) = maxAmp: amplitude of minimum (spindle: largest positive peak during spindle) in µV
 %               out.trialinfo(:,10)= p2pAmp: peak-to-peak amplitude (spindle: largest peak to largest trough) 
 %               out.trialinfo(:,11)= p2pTime: time in seconds from peak-to-peak (spindle: abs(min-max)) 
 %               out.trialinfo(:,12)= Power
@@ -29,8 +29,8 @@ function [FilteredEEG, out] = SpindleDetection(RecordingValues, SleepScoring, Sc
 %           out.vector          = Vector containing the presence of the events
 %           out.sleeptimeinsec  = Time in SECONDS used for the Detections (excl. time spent in Artefacts)
 %
-% Authors:  Carlos N. Oyanedel - Uni T�bingen, Germany
-%           Niels Niethard - Uni T�bingen, Germany
+% Authors:  Carlos N. Oyanedel - Uni Tübingen, Germany
+%           Niels Niethard - Uni Tübingen, Germany
 %           Thanks to Dr. Hong-Viet Ngo, University of Birmingham, UK
 % Contact:  jan.born@uni-tuebingen.de
 %
@@ -137,7 +137,7 @@ for i = 1:size(SpindlesDetected,2)
         j                   = j+1;
     end
 end
-if ~exist("ValidSpindles")
+if ~exist('ValidSpindles','var')
     ValidSpindles = SpindlesDetected;
     InvalidSpindles = 1;
 end
@@ -237,8 +237,8 @@ for iTrial=1:size(ValidSpindles,2);
     tmptrialinfo(iTrial,5)   = ValidSpindleDurationSec(iTrial); %duration: duration from start to end in seconds (spindle: betweet the two threshild crossings)
     tmptrialinfo(iTrial,6)   = ValidSpindleMinLoc(iTrial); %maxTime: time of maximum (spindle: largest negative trough during spindle) in datapoints of original dataset
     tmptrialinfo(iTrial,7)   = ValidSpindleMaxLoc(iTrial); %minTime: time of minimum (spindle: largest positive peak during spindle) in datapoints of original dataset
-    tmptrialinfo(iTrial,8)   = MinValidSpindleVal(iTrial)*1000; %minAmp: amplitude of maximum (spindle: largest negative trough during spindle) in �V
-    tmptrialinfo(iTrial,9)   = MaxValidSpindleVal(iTrial)*1000;%maxAmp: amplitude of minimum (spindle: largest positive peak during spindle) in �V
+    tmptrialinfo(iTrial,8)   = MinValidSpindleVal(iTrial)*1000; %minAmp: amplitude of maximum (spindle: largest negative trough during spindle) in ï¿½V
+    tmptrialinfo(iTrial,9)   = MaxValidSpindleVal(iTrial)*1000;%maxAmp: amplitude of minimum (spindle: largest positive peak during spindle) in ï¿½V
     tmptrialinfo(iTrial,10)  = Max2MinValidSpindlesDiff(iTrial)*1000; %p2pAmp: peak-to-peak amplitude (spindle: largest peak to largest trough)
     tmptrialinfo(iTrial,11)  = abs(Max2MinValidDiffLoc(iTrial))/fsample; %p2pTime: time in seconds from peak-to-peak (spindle: abs(min-max)) 
 end
