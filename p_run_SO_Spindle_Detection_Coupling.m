@@ -201,6 +201,11 @@ for subj = 1:length(subjectFiles)
         
         v_DensitySpindles(trial) = size(out_th.trialinfo,1);
         v_MeanPowerSpindles(trial) = mean(out_th.trialinfo(:,12));
+        
+        spindleInBinTotalOdor.(strcat('S',num2str(subj))).(strcat('T',num2str(trial)))= spindleInBininTrial(trial,:);
+        spindlePowerInBinTotalOdor.(strcat('S',num2str(subj))).(strcat('T',num2str(trial))) = spindlePowerInBininTrial(trial,:);
+        DensitySpindlesTotalOdor.(strcat('S',num2str(subj))).(strcat('T',num2str(trial))) = v_DensitySpindles(trial);
+        PowerSpindlesTotalOdor.(strcat('S',num2str(subj))).(strcat('T',num2str(trial))) = out_th.trialinfo(:,12);
     end
     
     v_MeanDensitySpindlesOdor(subj) = nanmean(v_DensitySpindles); %you can do either mean or sum
@@ -323,6 +328,11 @@ for subj = 1:length(subjectFiles)
         
         v_DensitySpindles(trial) = size(out_th.trialinfo,1);%/s_TimeAfterCero; % Play with density or just number (Density as # of spindles in time)
         v_MeanPowerSpindles(trial) = mean(out_th.trialinfo(:,12));
+        
+        spindleInBinTotalPlacebo.(strcat('S',num2str(subj))).(strcat('T',num2str(trial)))= spindleInBininTrial(trial,:);
+        spindlePowerInBinTotalPlacebo.(strcat('S',num2str(subj))).(strcat('T',num2str(trial))) = spindlePowerInBininTrial(trial,:);
+        DensitySpindlesTotalPlacebo.(strcat('S',num2str(subj))).(strcat('T',num2str(trial))) = v_DensitySpindles(trial);
+        PowerSpindlesTotalPlacebo.(strcat('S',num2str(subj))).(strcat('T',num2str(trial))) = out_th.trialinfo(:,12);
     end
     v_MeanDensitySpindlesPlacebo(subj) = nanmean(v_DensitySpindles); %you can do either mean or sum
     v_MeanPowerSpindlesPlacebo(subj) = nanmean(v_MeanPowerSpindles); %you can do either mean or sum
@@ -396,19 +406,25 @@ title('SW Phase-Power Spindle Onset coupling - Odor');
 
 
 %% Save useful information
-Spindles.Run = datetime;
-Spindles.ColumnNames = {'Odor', 'Placebo'};
-Spindles.subjPwrOdor = spindleInBininSubject_Odor;
-Spindles.subjPwrPlacebo = spindleInBininSubject_Placebo;
-Spindles.MeanPwr = [meanSpindleInBin_Odor' meanSpindleInBin_Placebo'];
-% Need here the number computation from the old script, please
-%Spindles.subjNumberOdor = ;
-%Spindles.subjNumberPlacebo = ;
-%Spindles.MeanNumber = ;
-Spindles.DatasetInfo.s_TotalTimeSec = s_TotalTimeSec;
-Spindles.DatasetInfo.Samplerate = s_fs;
-Spindles.DatasetInfo.NumberSubjects = [numel(FilesListSourceOdor), numel(FilesListSourcePlacebo)];
-Spindles.DatasetInfo.EpochSize = [s_TimeBeforeCero, s_TimeAfterCero];
-Spindles.ROI = {LabelCortex, LabelSubCtx};
+% Spindles.Run = datetime;
+% Spindles.ColumnNames = {'Odor', 'Placebo'};
+% Spindles.subjPwrOdor = spindleInBininSubject_Odor;
+% Spindles.subjPwrPlacebo = spindleInBininSubject_Placebo;
+% Spindles.MeanPwr = [meanSpindleInBin_Odor' meanSpindleInBin_Placebo'];
+% % Need here the number computation from the old script, please
+% %Spindles.subjNumberOdor = ;
+% %Spindles.subjNumberPlacebo = ;
+% %Spindles.MeanNumber = ;
+% Spindles.DatasetInfo.s_TotalTimeSec = s_TotalTimeSec;
+% Spindles.DatasetInfo.Samplerate = s_fs;
+% Spindles.DatasetInfo.NumberSubjects = [numel(FilesListSourceOdor), numel(FilesListSourcePlacebo)];
+% Spindles.DatasetInfo.EpochSize = [s_TimeBeforeCero, s_TimeAfterCero];
+% Spindles.ROI = {LabelCortex, LabelSubCtx};
+% 
+% save([cd slashSys 'run_SODetection'], 'Spindles');
 
-save([cd slashSys 'run_SODetection'], 'Spindles');
+save('spindleInBin', 'spindleInBinTotalOdor','spindleInBinTotalPlacebo');
+save('spindlePowerInBin', 'spindlePowerInBinTotalOdor','spindlePowerInBinTotalPlacebo');
+save('DensitySpindles', 'DensitySpindlesTotalOdor','DensitySpindlesTotalPlacebo');
+save('PowerSpindles', 'PowerSpindlesTotalOdor','PowerSpindlesTotalPlacebo');
+
