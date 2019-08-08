@@ -2,9 +2,16 @@ This project is licenced under the terms of the MIT License.
 
 MIT License
 
-Copyright (c) 2019 Andrea del Pilar Sánchez Corzo, David Marcel Baum, Martín Andrés Irani Cereceda.
+Copyright (c) 2019 
+Andrea del Pilar Sánchez Corzo - Pontificia Universidad Católica de Chile
+David Marcel Baum - Pontificia Universidad Católica de Chile
+Martín Andrés Irani Cereceda - Pontificia Universidad Católica de Chile
 
-Spindle and SO detection scripts were taken from 
+contact: adsanchez1@uc.cl
+
+Spindle and SO detection scripts were taken from:
+Carlos N. Oyanedel - Uni Tübingen, Germany
+Niels Niethard - Uni Tübingen, Germany
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
