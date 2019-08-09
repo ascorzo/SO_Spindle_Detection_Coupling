@@ -72,14 +72,14 @@ if strcmp(ChanVsSource,'Channel')
     %Asks for selection of a channel to detect the Slow Oscillations and
     %assigns to str_ChanSO
     [indx,tf] = listdlg('PromptString','Select a source: for Slow Oscillations',...
-        'SelectionMode','single',...
+        'SelectionMode','single','ListSize',[400 400],...
         'ListString',Sources);
     str_ChanSO = Sources(indx);
     
     %Asks for selection of a channel to detect the Sleep Spindles and
     %assigns to str_ChanSS
     [indx,tf] = listdlg('PromptString','Select a source: for Sleep Spindles',...
-        'SelectionMode','single',...
+        'SelectionMode','single','ListSize',[400 400],...
         'ListString',Sources);
     str_ChanSS = Sources(indx);
     
@@ -89,13 +89,13 @@ else
     %Asks for selection of a region to detect the Slow Oscillations and
     %assigns to str_ROI_SO
     [indx,tf] = listdlg('PromptString','Select a source for Slow Oscillations:',...
-        'SelectionMode','single',...
+        'SelectionMode','single','ListSize',[400 400],...
         'ListString',Sources);
     str_ROI_SO = Sources(indx);
     %Asks for selection of a region to detect the Sleep Spindles and
     %assigns to str_ROI_SS
     [indx,tf] = listdlg('PromptString','Select a source for Sleep Spindles:',...
-        'SelectionMode','single',...
+        'SelectionMode','single','ListSize',[400 400],...
         'ListString',Sources);
     str_ROI_SS = Sources(indx);
 end
@@ -236,7 +236,7 @@ for subj = 1:length(subjectFiles)
         
         %Calculate the Density of spindles in each Bin of SO phase
         mode = 'Density';
-        [spindleInBininTrial(trial,:),xedges_dor] = Phase_coup(FilteredEEG_SO, out_SO, out_SS, mode);
+        [spindleInBininTrial(trial,:),xedges_Odor] = Phase_coup(FilteredEEG_SO, out_SO, out_SS, mode);
         
         %Calculate the Power of spindles in each Bin of SO phase
         mode = 'Power';
@@ -254,10 +254,10 @@ for subj = 1:length(subjectFiles)
         PowerSpindlesTotalOdor.(strcat('S',num2str(subj))).(strcat('T',num2str(trial))) = out_SS.trialinfo(:,12);
     end
     
-    v_MeanDensitySpindlesOdor(subj) = nanmean(v_DensitySpindles); %you can do either mean or sum
-    v_MeanPowerSpindlesOdor(subj) = nanmean(v_MeanPowerSpindles); %you can do either mean or sum
-    spindleInBininSubject_Odor(subj,:) = nanmean(spindleInBininTrial,1); %you can do either mean or sum
-    spindlePowerInBininSubject_Odor(subj,:) = nanmean(spindlePowerInBininTrial,1); %you can do either mean or sum
+    v_MeanDensitySpindlesOdor(subj) = nanmean(v_DensitySpindles); 
+    v_MeanPowerSpindlesOdor(subj) = nanmean(v_MeanPowerSpindles); 
+    spindleInBininSubject_Odor(subj,:) = nanmean(spindleInBininTrial,1); 
+    spindlePowerInBininSubject_Odor(subj,:) = nanmean(spindlePowerInBininTrial,1); 
 end
 
 clear subjectFilesSource
@@ -402,7 +402,7 @@ for subj = 1:length(subjectFiles)
         
         %Calculate the Power of spindles in each Bin of SO phase
         mode = 'Power';
-        [spindlePowerInBininTrial(trial,:),xedges_Placebo] = Phase_coup(FilteredEEG_SO, out_SO, out_SS, mode);
+        [spindlePowerInBininTrial(trial,:),~] = Phase_coup(FilteredEEG_SO, out_SO, out_SS, mode);
         
         % Calculates the total density of spindles
         v_DensitySpindles(trial) = size(out_SS.trialinfo,1);%/s_TimeAfterCero; % Play with density or just number (Density as # of spindles in time)
@@ -415,10 +415,10 @@ for subj = 1:length(subjectFiles)
         DensitySpindlesTotalPlacebo.(strcat('S',num2str(subj))).(strcat('T',num2str(trial))) = v_DensitySpindles(trial);
         PowerSpindlesTotalPlacebo.(strcat('S',num2str(subj))).(strcat('T',num2str(trial))) = out_SS.trialinfo(:,12);
     end
-    v_MeanDensitySpindlesPlacebo(subj) = nanmean(v_DensitySpindles); %you can do either mean or sum
-    v_MeanPowerSpindlesPlacebo(subj) = nanmean(v_MeanPowerSpindles); %you can do either mean or sum
-    spindleInBininSubject_Placebo(subj,:) = nanmean(spindleInBininTrial,1); %you can do either mean or sum
-    spindlePowerInBininSubject_Placebo(subj,:) = nanmean(spindlePowerInBininTrial,1); %you can do either mean or sum
+    v_MeanDensitySpindlesPlacebo(subj) = nanmean(v_DensitySpindles); 
+    v_MeanPowerSpindlesPlacebo(subj) = nanmean(v_MeanPowerSpindles); 
+    spindleInBininSubject_Placebo(subj,:) = nanmean(spindleInBininTrial,1); 
+    spindlePowerInBininSubject_Placebo(subj,:) = nanmean(spindlePowerInBininTrial,1); 
 end
 
 %% Plots
