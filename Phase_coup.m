@@ -44,11 +44,20 @@ for sw = 1:size(out_SO.trialinfo,1)
     for Edge=1:length(xedges)-1
         %Find indexes of each phase bin
         idxs = find(phase_sw>=xedges(Edge) & phase_sw<xedges(Edge+1));
-        %Calculates the mean of spindles in the indexes of each phase bin
-        spindleInBin(sw, Edge) = mean(spindles_i(idxs));
+        if strcmp(mode,'Power') == 1
+            %Calculates the mean of spindles in the indexes of each phase bin
+            spindleInBin(sw, Edge) = nanmean(spindles_i(idxs));
+        else
+            %Calculates the total of spindles in the indexes of each phase bin
+            spindleInBin(sw, Edge) = nansum(spindles_i(idxs));
+        end
     end
 end
-
-% calculates the mean of spindles in each bin for all the SO detected
-spindleInBinTrial = mean(spindleInBin,1);
+if strcmp(mode,'Power') == 1
+    % calculates the mean of spindles in each bin for all the SO detected
+    spindleInBinTrial = nanmean(spindleInBin,1);
+else
+    % calculates the total of spindles in each bin for all the SO detected
+    spindleInBinTrial = nansum(spindleInBin,1);
+end
 

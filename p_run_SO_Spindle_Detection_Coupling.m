@@ -446,7 +446,7 @@ save([cd, 'MeanSpindlesInBin'],'spindleInBininSubject');
 figure;
 polarhistogram('BinEdges', xedges_Placebo, 'BinCounts', meanSpindleInBin_Placebo,'FaceColor', 'magenta',...
     'FaceAlpha',.3);
-thetaticks(0:90:315); %rlim([0 .02]);
+thetaticks(0:90:315); %rlim([0 1.2]);
 pax = gca; pax.ThetaAxisUnits = 'radians';
 pax.FontSize = 12; pax.GridColor = 'red';
 title('SW Phase-Spindle Onset coupling - Placebo');
@@ -454,7 +454,7 @@ title('SW Phase-Spindle Onset coupling - Placebo');
 figure;
 polarhistogram('BinEdges', xedges_Odor, 'BinCounts', meanSpindleInBin_Odor,'FaceColor', 'magenta',...
     'FaceAlpha',.3);
-thetaticks(0:90:315); %rlim([0 .02]);
+thetaticks(0:90:315); %rlim([0 1.2]);
 pax = gca; pax.ThetaAxisUnits = 'radians';
 pax.FontSize = 12; pax.GridColor = 'red';
 title('SW Phase-Spindle Onset coupling - Odor');
@@ -470,7 +470,7 @@ save([cd, 'MeanSpindlesPowerInBin'],'spindlePowerInBininSubject');
 figure;
 polarhistogram('BinEdges', xedges_Placebo, 'BinCounts', meanSpindlePowerInBin_Placebo,'FaceColor', 'magenta',...
     'FaceAlpha',.3);
-thetaticks(0:90:315); rlim([0 2.2]);
+thetaticks(0:90:315); %rlim([0 2.2]);
 pax = gca; pax.ThetaAxisUnits = 'radians';
 pax.FontSize = 12; pax.GridColor = 'red';
 title('SW Phase-Power Spindle Onset coupling - Placebo');
@@ -478,7 +478,7 @@ title('SW Phase-Power Spindle Onset coupling - Placebo');
 figure;
 polarhistogram('BinEdges', xedges_Odor, 'BinCounts', meanSpindlePowerInBin_Odor,'FaceColor', 'magenta',...
     'FaceAlpha',.3);
-thetaticks(0:90:315); rlim([0 2.2]);
+thetaticks(0:90:315); %rlim([0 2.2]);
 pax = gca; pax.ThetaAxisUnits = 'radians';
 pax.FontSize = 12; pax.GridColor = 'red';
 title('SW Phase-Power Spindle Onset coupling - Odor');
