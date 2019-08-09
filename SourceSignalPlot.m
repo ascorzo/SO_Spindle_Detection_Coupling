@@ -97,11 +97,11 @@ for Subj = 1:numel(FilesListChanOdor)
         
         subplot(3,1,2)
         plot(v_Time,DataOdorTrial_ctx)
-        ylim([ymin,ymax])
+        %ylim([ymin,ymax])
         
         subplot(3,1,3)
         plot(v_Time,DataOdorTrial_subct)
-        ylim([ymin,ymax])        
+        %ylim([ymin,ymax])        
         
         %% Spindle detection
         Label = 'Spindles';
@@ -127,11 +127,11 @@ for Subj = 1:numel(FilesListChanOdor)
         
         subplot(3,1,2)
         plot(v_time,FilteredEEG_ctx)
-        ylim([ymin,ymax])
+        %ylim([ymin,ymax])
         
         subplot(3,1,3);
         plot(v_time,FilteredEEG_subct)
-        ylim([ymin,ymax])
+        %ylim([ymin,ymax])
         
     end 
 end

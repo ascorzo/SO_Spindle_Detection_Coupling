@@ -1,38 +1,54 @@
-function [spindleInBinTrial,xedges] = Phase_coup(FilteredEEG_ctx, out_ctx, out_th,mode)
+function [spindleInBinTrial,xedges] = Phase_coup(FilteredEEG_SO, out_SO, out_SS,mode)
 
-xhilb = hilbert(FilteredEEG_ctx);
-xphase = angle(xhilb); 
+% Calculation of Envelope and angle of the Filtered EEG
+v_xhilb = hilbert(FilteredEEG_SO);
+v_xphase = angle(v_xhilb); 
 
-spindles  = zeros(length(xphase),1); 
-nedges = linspace(-pi,pi,15);
+% Initialization of vector of spindles as nan, in order to do meannan of
+% power in the future
+v_spindles  = nan(length(v_xphase),1); 
 
-if isnan(out_th.trialinfo(:,2))
-    spindleInBinTrial = nan(length(nedges)-1,1);
-    xedges = nedges;
+% Division in bins of the 2pi phase of the SO, to detect the spindles
+% coupled
+v_nedges = linspace(-pi,pi,15);
+
+%If there are no spindles, then steps out the function and returns a vector
+%of nan
+if isnan(out_SS.trialinfo(:,2))
+    spindleInBinTrial = nan(length(v_nedges)-1,1);
+    xedges = v_nedges;
     return 
 end
 
-spindles(out_th.trialinfo(:,2)) = 1; 
+% Make the v_spindles vector equal to ones when there is a spindle onset
+v_spindles(out_SS.trialinfo(:,2)) = 1; 
+
+% If we want to check the power, then, multiplies the v_spindle vector by
+% the power of each spindle associated onset
 if strcmp(mode,'Power') == 1
-    spindles(spindles==1) = out_th.trialinfo(:,12);
+    v_spindles(v_spindles==1) = out_SS.trialinfo(:,12);
 end
 
-for sw = 1:size(out_ctx.trialinfo,1)
-phase_sw = xphase(out_ctx.trialinfo(sw,2):out_ctx.trialinfo(sw,4));
-spindles_i = spindles(out_ctx.trialinfo(sw,2):out_ctx.trialinfo(sw,4));
 
-[N,xedges,bin] = histcounts(phase_sw, nedges); 
-
-for E=1:length(xedges)-1
-    idxs = find(phase_sw>=xedges(E) & phase_sw<xedges(E+1));   
-    spindleInBin(sw, E) = mean(spindles_i(idxs)); 
+for sw = 1:size(out_SO.trialinfo,1)
+    % calculates the phase in which each SO falls  
+    %v_xphase(startpointSO:endpointSO)
+    phase_sw = v_xphase(out_SO.trialinfo(sw,2):out_SO.trialinfo(sw,4));
+    
+    %Calculates the spindles onset or power located in each SO
+    spindles_i = v_spindles(out_SO.trialinfo(sw,2):out_SO.trialinfo(sw,4));
+    
+    
+    [N,xedges,bin] = histcounts(phase_sw, v_nedges);
+    
+    for Edge=1:length(xedges)-1
+        %Find indexes of each phase bin
+        idxs = find(phase_sw>=xedges(Edge) & phase_sw<xedges(Edge+1));
+        %Calculates the mean of spindles in the indexes of each phase bin
+        spindleInBin(sw, Edge) = mean(spindles_i(idxs));
+    end
 end
-end 
+
+% calculates the mean of spindles in each bin for all the SO detected
 spindleInBinTrial = mean(spindleInBin,1);
-
-% polarhistogram('BinEdges', xedges, 'BinCounts', spindleInBinTrial,'FaceColor', 'magenta',...
-%     'FaceAlpha',.3);
-% thetaticks(0:90:315);
-% pax = gca; pax.ThetaAxisUnits = 'radians';
-% pax.FontSize = 12; pax.GridColor = 'red';
 
