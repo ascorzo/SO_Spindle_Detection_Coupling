@@ -32,7 +32,7 @@ OnVsOff = questdlg('Select if you want to evaluate off condition or odor conditi
 switch ChanVsSource
     case 'Channel'
         %Containing channel data
-        if ~exist('pathNameChan','var')
+        if ~exist('pathNameChan','var') || size(pathNameChan,2) < 3
             % path to datasets containing channel data
             pathNameChan = [uigetdir(cd,'Choose the folder that contains the CHANNEL datasets'), slashSys];
             addpath(pathNameChan)
@@ -42,7 +42,7 @@ switch ChanVsSource
             FilesList = FilesListChanOdor;
         end
     case 'Source'
-        if ~exist('pathNameSource','var')
+        if  ~exist('pathNameSource','var') || size(pathNameSource,2) < 3 
             %path to datasets with source estimation
             pathNameSource = [uigetdir(cd,'Choose the folder that contains the SOURCE datasets'), slashSys];
             addpath(pathNameSource)
