@@ -488,14 +488,47 @@ title('SW Phase-Power Spindle Onset coupling - Odor');
 
 %% Save useful information
 
+% Prepare path for saving data
+savePath = strcat(cd, slashSys, 'Results', slashSys);
+
+% Prepare structure that holds all of results
 if strcmp(ChanVsSource,'Channel')
-    save(strcat('spindleInBin_',str_ChanSO,'vs',str_ChanSS,'_',OnVsOff), 'spindleInBinTotalOdor','spindleInBinTotalPlacebo');
-    save(strcat('spindlePowerInBin',str_ChanSO,'vs',str_ChanSS,'_',OnVsOff), 'spindlePowerInBinTotalOdor','spindlePowerInBinTotalPlacebo');
-    save(strcat('DensitySpindles',str_ChanSO,'vs',str_ChanSS,'_',OnVsOff), 'DensitySpindlesTotalOdor','DensitySpindlesTotalPlacebo');
-    save(strcat('PowerSpindles',str_ChanSO,'vs',str_ChanSS,'_',OnVsOff), 'PowerSpindlesTotalOdor','PowerSpindlesTotalPlacebo');   
+    Channel.LabelSO = str_ChanSO;
+    Channel.LabelSpindle = str_ChanSS;
+    Channel.OnVsOff = OnVsOff;
+    Channel.spindleInBinTotalOdor = spindleInBinTotalOdor;
+    Channel.spindleInBinTotalPlacebo = spindleInBinTotalPlacebo;
+    Channel.spindlePowerInBinTotalOdor = spindlePowerInBinTotalOdor;
+    Channel.spindlePowerInBinTotalPlacebo = spindlePowerInBinTotalPlacebo;
+    Channel.DensitySpindlesTotalOdor = DensitySpindlesTotalOdor;
+    Channel.DensitySpindlesTotalPlacebo = DensitySpindlesTotalPlacebo;
+    Channel.PowerSpindlesTotalOdor = PowerSpindlesTotalOdor;
+    Channel.PowerSpindlesTotalPlacebo = PowerSpindlesTotalPlacebo;
+    
+elseif strcmp(ChanVsSource,'Source')
+    Source.LabelSO = str_ROI_SO;
+    Source.LabelSpindle = str_ROI_SS;
+    Source.OnVsOff = OnVsOff;
+    Source.spindleInBinTotalOdor = spindleInBinTotalOdor;
+    Source.spindleInBinTotalPlacebo = spindleInBinTotalPlacebo;
+    Source.spindlePowerInBinTotalOdor = spindlePowerInBinTotalOdor;
+    Source.spindlePowerInBinTotalPlacebo = spindlePowerInBinTotalPlacebo;
+    Source.DensitySpindlesTotalOdor = DensitySpindlesTotalOdor;
+    Source.DensitySpindlesTotalPlacebo = DensitySpindlesTotalPlacebo;
+    Source.PowerSpindlesTotalOdor = PowerSpindlesTotalOdor;
+    Source.PowerSpindlesTotalPlacebo = PowerSpindlesTotalPlacebo;
+    
+end
+
+% Save results
+if ~exist(strcat(cd, slashSys, 'Results'),'dir')
+    mkdir (strcat(cd, slashSys, 'Results'));
+end
+
+if strcmp(ChanVsSource,'Channel')
+    save(strcat(savePath,str_ChanSO,'_vs_',str_ChanSS,'_',OnVsOff,'.mat'), 'Channel');
+    
 else  
-    save(strcat('spindleInBin',str_ROI_SO,'vs',str_ROI_SS,'_',OnVsOff), 'spindleInBinTotalOdor','spindleInBinTotalPlacebo');
-    save(strcat('spindlePowerInBin',str_ROI_SO,'vs',str_ROI_SS,'_',OnVsOff), 'spindlePowerInBinTotalOdor','spindlePowerInBinTotalPlacebo');
-    save(strcat('DensitySpindles',str_ROI_SO,'vs',str_ROI_SS,'_',OnVsOff), 'DensitySpindlesTotalOdor','DensitySpindlesTotalPlacebo');
-    save(strcat('PowerSpindles',str_ROI_SO,'vs',str_ROI_SS,'_',OnVsOff), 'PowerSpindlesTotalOdor','PowerSpindlesTotalPlacebo');  
+    save(strcat(savePath,str_ROI_SO,'_vs_',str_ROI_SS,'_',OnVsOff,'.mat'), 'Source');
+
 end
