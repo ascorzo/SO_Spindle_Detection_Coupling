@@ -443,21 +443,18 @@ meanSpindleInBin_Odor = nanmean(spindleInBininSubject_Odor,1);
 spindleInBininSubject.Placebo = spindleInBininSubject_Placebo;
 spindleInBininSubject.Odor = spindleInBininSubject_Odor;
 save([cd, 'MeanSpindlesInBin'],'spindleInBininSubject');
-figure;
-polarhistogram('BinEdges', xedges_Placebo, 'BinCounts', meanSpindleInBin_Placebo,'FaceColor', 'magenta',...
-    'FaceAlpha',.3);
-thetaticks(0:90:315); %rlim([0 1.2]);
-pax = gca; pax.ThetaAxisUnits = 'radians';
-pax.FontSize = 12; pax.GridColor = 'red';
-title('SW Phase-Spindle Onset coupling - Placebo');
 
 figure;
-polarhistogram('BinEdges', xedges_Odor, 'BinCounts', meanSpindleInBin_Odor,'FaceColor', 'magenta',...
-    'FaceAlpha',.3);
+polarhistogram('BinEdges', xedges_Placebo, 'BinCounts', meanSpindleInBin_Placebo,'FaceColor', 'blue',...
+    'FaceAlpha',.2);
+hold on;
+polarhistogram('BinEdges', xedges_Odor, 'BinCounts', meanSpindleInBin_Odor,'FaceColor', 'red',...
+    'FaceAlpha',.2);
 thetaticks(0:90:315); %rlim([0 1.2]);
 pax = gca; pax.ThetaAxisUnits = 'radians';
-pax.FontSize = 12; pax.GridColor = 'red';
-title('SW Phase-Spindle Onset coupling - Odor');
+pax.FontSize = 12; pax.GridColor = 'black';
+legend('sham','cue');
+title('SW Phase-Spindle Onset coupling - sham vs cue');
 
 %% Polar Plot for Power
 
@@ -467,24 +464,18 @@ meanSpindlePowerInBin_Odor = nanmean(spindlePowerInBininSubject_Odor,1);
 spindlePowerInBininSubject.Placebo = spindlePowerInBininSubject_Placebo;
 spindlePowerInBininSubject.Odor = spindlePowerInBininSubject_Odor;
 save([cd, 'MeanSpindlesPowerInBin'],'spindlePowerInBininSubject');
-figure;
-polarhistogram('BinEdges', xedges_Placebo, 'BinCounts', meanSpindlePowerInBin_Placebo,'FaceColor', 'magenta',...
-    'FaceAlpha',.3);
-thetaticks(0:90:315); %rlim([0 2.2]);
-pax = gca; pax.ThetaAxisUnits = 'radians';
-pax.FontSize = 12; pax.GridColor = 'red';
-title('SW Phase-Power Spindle Onset coupling - Placebo');
 
 figure;
-polarhistogram('BinEdges', xedges_Odor, 'BinCounts', meanSpindlePowerInBin_Odor,'FaceColor', 'magenta',...
-    'FaceAlpha',.3);
+polarhistogram('BinEdges', xedges_Placebo, 'BinCounts', meanSpindlePowerInBin_Placebo,'FaceColor', 'blue',...
+    'FaceAlpha',.2);
+hold on;
+polarhistogram('BinEdges', xedges_Odor, 'BinCounts', meanSpindlePowerInBin_Odor,'FaceColor', 'red',...
+    'FaceAlpha',.2);
 thetaticks(0:90:315); %rlim([0 2.2]);
 pax = gca; pax.ThetaAxisUnits = 'radians';
-pax.FontSize = 12; pax.GridColor = 'red';
-title('SW Phase-Power Spindle Onset coupling - Odor');
-
-
-
+pax.FontSize = 12; pax.GridColor = 'black';
+legend('sham','cue');
+title('SW Phase-Power Spindle Onset coupling - sham vs cue');
 
 %% Save useful information
 
@@ -520,15 +511,25 @@ elseif strcmp(ChanVsSource,'Source')
     
 end
 
+% Info for plotting polar histogram
+PlotInfo.meanSpindleInBin_Odor = meanSpindleInBin_Odor;
+PlotInfo.meanSpindleInBin_Placebo = meanSpindleInBin_Placebo;
+PlotInfo.meanSpindlePowerInBin_Odor = meanSpindlePowerInBin_Odor;
+PlotInfo.meanSpindlePowerInBin_Placebo = meanSpindlePowerInBin_Placebo;
+PlotInfo.xedges_Odor = xedges_Odor;
+PlotInfo.xedges_Placebo = xedges_Placebo;
+
 % Save results
 if ~exist(strcat(cd, slashSys, 'Results'),'dir')
     mkdir (strcat(cd, slashSys, 'Results'));
 end
 
 if strcmp(ChanVsSource,'Channel')
-    save(strcat(savePath,str_ChanSO,'_vs_',str_ChanSS,'_',OnVsOff,'.mat'), 'Channel');
-    
+    save(strcat(savePath,str_ChanSO,'_vs_',str_ChanSS,'_',OnVsOff,'.mat'), 'Channel', 'PlotInfo');
+    % Save figure
+    saveas(figNumber, strcat(savePath,str_ChanSO,'_vs_',str_ChanSS,'_',OnVsOff,'.bmp'))
 else  
-    save(strcat(savePath,str_ROI_SO,'_vs_',str_ROI_SS,'_',OnVsOff,'.mat'), 'Source');
-
+    save(strcat(savePath,str_ROI_SO,'_vs_',str_ROI_SS,'_',OnVsOff,'.mat'), 'Source', 'PlotInfo');
+    % Save figure
+    saveas(figNumber, strcat(savePath,str_ROI_SO,'_vs_',str_ROI_SS,'_',OnVsOff,'.bmp'))
 end
