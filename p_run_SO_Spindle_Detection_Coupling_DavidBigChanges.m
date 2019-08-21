@@ -104,7 +104,9 @@ if ~exist('subjectFilesOdor','var') ||...
             % subjectFilesOdor{Load2Mem,1} = load([pathNameSource FilesListSourceOdor(Load2Mem).name]);
             matfiles_subjectFilesOdor{Load2Mem,1} = matfile([pathNameSource FilesListSourceOdor(Load2Mem).name]);
             
-            % loads everything except 'Value' field
+            % Loads everything except 'Value' field. This field is the
+            % heavy part of the files. Later, only needed data will be
+            % loeded.
             subjectFilesOdor{Load2Mem,1} = load(matfiles_subjectFilesOdor{Load2Mem,1}.Properties.Source,...
                 '-regexp', '^(?!Value)\w');
         end
@@ -140,9 +142,9 @@ if ~exist('subjectFilesPlacebo','var') ||...
         else
             matfiles_subjectFilesPlacebo{Load2Mem,1} = matfile([pathNameSource FilesListSourcePlacebo(Load2Mem).name]);
             
-            % loads everything except 'Value' field
+            % Again, loads everything except 'Value' field
             subjectFilesPlacebo{Load2Mem,1} = load(matfiles_subjectFilesPlacebo{Load2Mem,1}.Properties.Source,...
-                '-regexp', '^(?!Value)\w');            
+                '-regexp', '^(?!Value)\w');
         end
     end
 end    
