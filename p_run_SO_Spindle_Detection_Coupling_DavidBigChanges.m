@@ -543,6 +543,12 @@ title(strcat('Spindle power of', {' '}, Spindlesource,...
     ' phase-locked to Slow Osc. of', {' '}, SOsource));
 
 %% Save useful information
+% =========================================================================
+% Be aware that changing the way matrices holding results are generated
+% will greatly affect posterior scripts of table generation and statistical
+% computation and will most likely create breakage of the scripts!
+% Please only do changes if really needed.
+% =========================================================================
 
 % Prepare path for saving data
 savePath = strcat(cd, slashSys, 'Results', slashSys);
