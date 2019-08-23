@@ -10,7 +10,8 @@ v_spindles  = nan(length(v_xphase),1);
 
 % Division in bins of the 2pi phase of the SO, to detect the spindles
 % coupled
-% v_nedges = linspace(-pi,pi,15); % Change here Bins ***
+% v_nedges = linspace(-pi,pi,15); % Change here Bin edges (+1 than number
+% of desired bins) ***
 v_nedges = linspace(-pi,pi,9);
 
 %If there are no spindles, then steps out the function and returns a vector
